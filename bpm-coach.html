@@ -1,0 +1,89 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../iron-ajax/iron-ajax.html">
+
+		<link href="/dmb/css/bootstrap.css" rel="stylesheet" media="screen">
+		<link rel="stylesheet" href="/dmb/css/jquery.sidr.dark.css">
+		<link href="/dmb/css/custom.css" rel="stylesheet" media="screen">
+		
+    
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+		<script>
+			window.jQuery || document.write('<script src="/dmb/js/dist/jquery.min.js"/>')
+		</script>
+		<script src="/dmb/js/dist/utils.min.js"></script>
+		<script src="/dmb/js/dist/angular-combined.min.js"></script>
+		<script src="/dmb/js/dist/bootstrap-combined.min.js"></script>
+		<script src="/dmb/js/dist/dmb-client.min.js"></script>
+		<script src="/dmb/js/apps/conversations/conversationsApp.js"></script>
+		<script src="/dmb/js/apps/external/external.js"></script>
+		<script src="/dmb/js/apps/external/analytics.js"></script>    
+
+<!--
+An element providing a solution to no problem in particular.
+
+Example:
+
+    <proto-element></proto-element>
+
+@demo
+-->
+
+<dom-module id="bpm-coach">
+
+  <template>
+  
+    <iron-ajax
+      id="ajax"
+      contentType="application/json"
+      url=""
+      handle-as="json"
+      on-response="handleResponse"
+      debounce-duration="300">
+    </iron-ajax>
+
+<iframe width="100%" height="1200" frameBorder="0" ng-load="resizeIframe($event)" scrolling="no" marginheight="0" marginwidth="0"
+          							src="/dmb-access-proxy/teamworks/executeServiceByName?processApp=DMB&serviceName=ViewDMBConversation&tw.local.conversationID=DMB0000104"></iframe>
+
+    
+  </template>
+
+  <script>
+    Polymer({
+      is: "bpm-coach",
+      getConversations: function() {
+        console.log("getConversations");
+        this.$.ajax.url = "/dmbsrv/rest/user/b254b580-4cbe-11e3-8f96-0800200c1002/folder/Conversations/document";
+        this.$.ajax.generateRequest();
+      },
+     getAuthUser: function() {
+        console.log("getAuthUser");
+        this.$.ajax.url = "/dmbsrv/rest/auth";
+        this.$.ajax.generateRequest();
+      },      
+      ready: function() {
+        this.getAuthUser();
+        this.conversationItem = {
+          selectedDocument: {
+            formStatus: "SUBMITTED",
+            submitDate: "17/08/2015"
+          }
+        };
+      },
+      handleResponse: function(request) {
+          console.log(request.detail.response);
+          console.log(this.$.ajax.lastResponse);
+          this.userProfile = request.detail.response;
+      }      
+    });
+  </script>
+
+</dom-module>
